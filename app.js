@@ -7,24 +7,30 @@ const options = {
   path: '/',
   headers: {
     'Content-Type': 'application/json',
-    Authorization: 'Basic SERCX0FETUlOOmhkYl9hZG1pbg=='
-  }
+    Authorization: 'Basic SERCX0FETUlOOmhkYl9hZG1pbg==',
+  },
 };
 
 const req = http.request(options, res => {
   console.log(`statusCode: ${res.statusCode}`);
+  const chunks = [];
 
-  res.on('data', d => {
-    process.stdout.write(d);
+  res.on('data', chunk => {
+    chunks.push(chunk);
+  });
+
+  res.on('end', () => {
+    const body = Buffer.concat(chunks);
+    const dataJASON = JSON.parse(body);
+    console.log(dataJASON.dev);
+  });
+
+  res.on('error', error => {
+    console.error(error);
   });
 });
 
-req.on('error', error => {
-  console.error(error);
-});
-
-// data = '{\n  "operation":"create_schema",\n  "schema": "dev"\n}';
-data = '{\n  "operation":"describe_all"}';
+const data = JSON.stringify({ operation: 'describe_all' });
 
 req.write(data);
 req.end();
