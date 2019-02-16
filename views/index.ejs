@@ -9,6 +9,25 @@
     </head>
     <body>
       <h1>HarperDB</h1>
+      <div class="form-header">
+        <h2>Send us a message</h2>
+      </div>
+      <form method="post" action="/" novalidate>
+        <div class="form-field">
+          <label for="message">Message</label>
+          <textarea class="input" id="message" name="message" rows="4" autofocus></textarea>
+        </div>
+        <div class="form-field">
+          <label for="email">Email</label>
+          <input class="input" id="email" name="email" type="email" value="" />
+        </div>
+        <%= data.message %>
+        <%= data.email %>
+        <div class="form-actions">
+          <button class="btn" type="submit">Send</button>
+        </div>
+      </form>
+    
 
     </body>
   </html>
