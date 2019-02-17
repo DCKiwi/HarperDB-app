@@ -9,6 +9,39 @@
     </head>
     <body>
       <h1>HarperDB</h1>
+      <h2>Select an existing schema or create a new one</h2>
+      
+      <!-- check to see if any schemas exist, if so render list -->
+      <% if(schemas) { %>
+        <div class="schema-select">
+          <form method="post" action="/create_table">
+            <select name="schemas" size="5">
+                <% for (var i=0; i < schemas.length; i++) { %>
+                  <option value=<%= schemas[i] %>  ><%= schemas[i] %></option>
+                <%}%>
+            </select>
+            <br><br>
+            <input type="submit">
+          </form>
+        </div>
+      <%} else  {%>
+        <h3>No schemas exist, please create one</h3>
+      <%}%>
+        <form class="create-schema" method="post" action="/create_table">
+          Schema name:<br>
+          <input type="text" name="schemaName"><br>
+          <input type="submit">
+        </form>
+
+
+        <!-- <% if(data.schemas) { %>
+          <h1><%= data.schemas %></h1>
+    
+
+        <%}%>
+
+
+      
       <div class="form-header">
         <h2>Send us a message</h2>
       </div>
@@ -27,7 +60,7 @@
           <button class="btn" type="submit">Send</button>
         </div>
       </form>
-    
+     -->
 
     </body>
   </html>

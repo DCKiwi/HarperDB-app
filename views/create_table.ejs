@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+  <html>
+    <head>
+      <meta charset="utf-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+      <title>HarperDB</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <link rel="stylesheet" type="text/css" media="screen" href="../css/styles.css" />
+    </head>
+    <body>
+      <h1>HarperDB</h1>
+      <h2>Select an existing table or create a new one</h2>
+      <h3 class="schema-name">Current schema: <%= data.schemas %></h3>
+
+      <!-- check to see if any tables exist, if so render list -->
+      <% if(tables.length !== 0) { %>
+        <div class="tables-select">
+          <form method="post" action="/create_table">
+            <select name="tables" size="5">
+                <% for (var i=0; i < tables.length; i++) { %>
+                  <option value=<%= tables[i] %>  ><%= tables[i] %></option>
+                <%}%>
+            </select>
+            <br><br>
+            <input type="submit">
+          </form>
+        </div>
+      <%} else  {%>
+        <h3>No tables exist, please create one</h3>
+      <%}%>
+        <form class="create-tables" method="post" action="/create_table">
+          Table name:<br>
+          <input type="text" name="tablesName"><br>
+          <input type="submit">
+        </form>
+    </body>
+  </html>
