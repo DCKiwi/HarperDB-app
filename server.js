@@ -8,13 +8,14 @@ const { describeAll, describeSchema, createSchema, createTable, insert } = requi
 // Init app
 const app = express();
 
-//Body parser middleware
+// Body parser middleware
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 // EJS Template engine
 app.set('view engine', 'ejs');
 
+// Landing page, create or select schema
 app.get('/', (req, res) => {
   httpRequest(describeAll()).then(data => {
 
@@ -27,18 +28,20 @@ app.get('/', (req, res) => {
   });
 });
 
+// Takes request from previous page then create or select table.
 app.post('/create_table', (req, res) => {
   let tables = [];
   let message = ""
+
+  // If schema exists describe it
   if (req.body.schemas) {
     httpRequest(describeSchema(req.body.schemas)).then(queryData => {
-
-
 
       // Test if query object is empty, if not extract table name key values from object array
       if (Object.entries(queryData.data).length !== 0 && queryData.data.constructor !== Object) {
         tables = queryData.data.map(value => value.name);
       }
+
       message = `Current schema: ${req.body.schemas}`;
 
       res.render('create_table', { message, tables, data: req.body });
@@ -46,32 +49,20 @@ app.post('/create_table', (req, res) => {
       console.log(error);
     });
 
+    // Create schema from user input, schema will have no description
   } else {
     httpRequest(createSchema(req.body.schemaName)).then(queryData => {
-      console.log(queryData.data.message);
+
+      // Extract response msg and capitalize first word.
       message = queryData.data.message;
-      res.render('create_table', { message, tables, queryData, data: req.body });
+      message = message.charAt(0).toUpperCase() + message.slice(1);
+
+      res.render('create_table', { message, tables, data: req.body });
     }).catch(error => {
       console.log(error);
     });
-
-
-
   }
 
-  // httpRequest(describeSchema(req.body.schemas)).then(queryData => {
-
-  //   let tables = []
-
-  //   // Test if query object is empty, if not extract table name key values from object array
-  //   if (Object.entries(queryData.data).length !== 0 && queryData.data.constructor !== Object) {
-  //     tables = queryData.data.map(value => value.name);
-  //   }
-
-  //   res.render('create_table', { tables, data: req.body });
-  // }).catch(error => {
-  //   console.log(error);
-  // });
 
 
 });

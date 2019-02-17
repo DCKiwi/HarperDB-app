@@ -15,52 +15,25 @@
       <% if(schemas) { %>
         <div class="schema-select">
           <form method="post" action="/create_table">
+            <label>Schemas</label><br>
             <select name="schemas" size="5">
                 <% for (var i=0; i < schemas.length; i++) { %>
                   <option value=<%= schemas[i] %>  ><%= schemas[i] %></option>
                 <%}%>
             </select>
-            <br><br>
+            <br>
             <input type="submit">
           </form>
         </div>
       <%} else  {%>
-        <h3>No schemas exist, please create one</h3>
+        <h3>No schemas exist please create one</h3>
       <%}%>
-        <form class="create-schema" method="post" action="/create_table">
-          Schema name:<br>
-          <input type="text" name="schemaName"><br>
-          <input type="submit">
-        </form>
 
-
-        <!-- <% if(data.schemas) { %>
-          <h1><%= data.schemas %></h1>
-    
-
-        <%}%>
-
-
-      
-      <div class="form-header">
-        <h2>Send us a message</h2>
-      </div>
-      <form method="post" action="/" novalidate>
-        <div class="form-field">
-          <label for="message">Message</label>
-          <textarea class="input" id="message" name="message" rows="4" autofocus></textarea>
-        </div>
-        <div class="form-field">
-          <label for="email">Email</label>
-          <input class="input" id="email" name="email" type="email" value="" />
-        </div>
-        <%= data.message %>
-        <%= data.email %>
-        <div class="form-actions">
-          <button class="btn" type="submit">Send</button>
-        </div>
+      <form class="create-schema" method="post" action="/create_table">
+        <label>Create Schema</label><br>
+        <input type="text" name="schemaName" placeholder="Schema name"><br>
+        <input type="submit">
       </form>
-     -->
 
     </body>
   </html>

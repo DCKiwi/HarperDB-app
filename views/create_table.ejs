@@ -11,29 +11,30 @@
       <h1>HarperDB</h1>
       <h2>Select an existing table or create a new one</h2>
       <h3 class="schema-name"><%= message %></h3>
-        
-        <!-- Current schema: <%= data.schemas %> -->
-
+  
       <!-- check to see if any tables exist, if so render list -->
       <% if(tables.length !== 0) { %>
         <div class="tables-select">
           <form method="post" action="/create_table">
+            <label>Tables</label><br>
             <select name="tables" size="5">
                 <% for (var i=0; i < tables.length; i++) { %>
                   <option value=<%= tables[i] %>  ><%= tables[i] %></option>
                 <%}%>
             </select>
-            <br><br>
+            <br>
             <input type="submit">
           </form>
         </div>
       <%} else  {%>
-        <h3>No tables exist, please create one</h3>
+        <h3>No tables exist please create one</h3>
       <%}%>
-        <form class="create-tables" method="post" action="/create_table">
-          Table name:<br>
-          <input type="text" name="tablesName"><br>
-          <input type="submit">
-        </form>
+
+    <form class="create-tables" method="post" action="/create_table">
+      <label>Create Table</label><br>
+      <input type="text" name="tablesName" placeholder="Table name"><br>
+      <input type="submit">
+    </form>
+
     </body>
   </html>
