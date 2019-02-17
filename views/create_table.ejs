@@ -10,7 +10,9 @@
     <body>
       <h1>HarperDB</h1>
       <h2>Select an existing table or create a new one</h2>
-      <h3 class="schema-name">Current schema: <%= data.schemas %></h3>
+      <h3 class="schema-name"><%= message %></h3>
+        
+        <!-- Current schema: <%= data.schemas %> -->
 
       <!-- check to see if any tables exist, if so render list -->
       <% if(tables.length !== 0) { %>

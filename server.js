@@ -17,7 +17,6 @@ app.set('view engine', 'ejs');
 
 app.get('/', (req, res) => {
   httpRequest(describeAll()).then(data => {
-    // console.log(data.data);
 
     // Array of keys from describe all object
     const schemas = Object.keys(data.data);
@@ -29,33 +28,51 @@ app.get('/', (req, res) => {
 });
 
 app.post('/create_table', (req, res) => {
-
-  httpRequest(describeSchema(req.body.schemas)).then(queryData => {
-
-    let tables = []
-
-    // Test if query object is empty, if not extract table name key values from object array
-    if (Object.entries(queryData.data).length !== 0 && queryData.data.constructor !== Object) {
-      console.log("CALLED");
-      tables = queryData.data.map(value => value.name);
-    }
-
-    res.render('create_table', { tables, data: req.body });
-  }).catch(error => {
-    console.log(error);
-  });
+  let tables = [];
+  let message = ""
+  if (req.body.schemas) {
+    httpRequest(describeSchema(req.body.schemas)).then(queryData => {
 
 
 
+      // Test if query object is empty, if not extract table name key values from object array
+      if (Object.entries(queryData.data).length !== 0 && queryData.data.constructor !== Object) {
+        tables = queryData.data.map(value => value.name);
+      }
+      message = `Current schema: ${req.body.schemas}`;
+
+      res.render('create_table', { message, tables, data: req.body });
+    }).catch(error => {
+      console.log(error);
+    });
+
+  } else {
+    httpRequest(createSchema(req.body.schemaName)).then(queryData => {
+      console.log(queryData.data.message);
+      message = queryData.data.message;
+      res.render('create_table', { message, tables, queryData, data: req.body });
+    }).catch(error => {
+      console.log(error);
+    });
 
 
-  // httpRequest(describeAll()).then(queryData => {
-  //   const schemas = Object.keys(queryData.data);
-  //   console.log(req.body);
-  //   res.render('index', { queryData, schemas, data: req.body });
+
+  }
+
+  // httpRequest(describeSchema(req.body.schemas)).then(queryData => {
+
+  //   let tables = []
+
+  //   // Test if query object is empty, if not extract table name key values from object array
+  //   if (Object.entries(queryData.data).length !== 0 && queryData.data.constructor !== Object) {
+  //     tables = queryData.data.map(value => value.name);
+  //   }
+
+  //   res.render('create_table', { tables, data: req.body });
   // }).catch(error => {
   //   console.log(error);
   // });
+
 
 });
 
