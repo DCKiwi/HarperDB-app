@@ -2,7 +2,15 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const ejs = require('ejs');
 const httpRequest = require('./db/index');
-const { describeAll, describeSchema, createSchema, createTable, insert } = require('./db/query');
+const {
+  describeAll,
+  describeSchema,
+  describeTable,
+  createSchema,
+  createTable,
+  insert,
+  selectAllTable
+} = require('./db/query');
 
 
 // Init app
@@ -44,9 +52,10 @@ app.post('/create_table', (req, res) => {
 
       message = `Current schema: ${req.body.schemas}`;
 
-      res.render('create_table', { message, tables, data: req.body });
+      res.render('create_table', { message, tables, data: req.body, schema: req.body.schemas });
     }).catch(error => {
       console.log(error);
+      res.redirect('index', { error });
     });
 
     // Create schema from user input, schema will have no description
@@ -57,14 +66,38 @@ app.post('/create_table', (req, res) => {
       message = queryData.data.message;
       message = message.charAt(0).toUpperCase() + message.slice(1);
 
-      res.render('create_table', { message, tables, data: req.body });
+      res.render('create_table', { message, tables, data: req.body, schema: req.body.schemaName });
     }).catch(error => {
       console.log(error);
     });
   }
+});
 
+// Display selected or created table
+app.post('/display_insert', (req, res) => {
+  // keyValuse = [{ id: 25, breed: "hound", name: "pussycat", age: 11 }]
+  // httpRequest(insert("cats", "breeds", keyValuse))
+  //   .then(queryData => { console.log(queryData) });
+  // console.log(req.body);
 
+  httpRequest(selectAllTable("cats", "breeds")).then(data => {
+    console.log(data)
+  }).catch(error => {
+    console.log(error);
+  });
 
+  if (req.body.tables) {
+    httpRequest(describeTable(req.body.tables, req.body.currentSchema))
+      .then(queryData => {
+
+        message = `Current table: ${req.body.tables}`;
+        console.log(queryData.data.attributes)
+
+        res.render('display_insert', { data: req.body, message });
+      }).catch(error => {
+        console.log(error);
+      });
+  };
 });
 
 const port = process.env.PORT || 5001;

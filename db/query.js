@@ -8,7 +8,9 @@ const describeSchema = (schema) => JSON.stringify({ operation: 'describe_schema'
 
 const describeTable = (table, schema) => JSON.stringify({ operation: 'describe_table', table, schema });
 
-const insert = (schema, table, keyValue) => JSON.stringify({ operation: 'insert', schema, table, records: keyValue })
+const insert = (schema, table, keyValue) => JSON.stringify({ operation: 'insert', schema, table, records: keyValue });
+
+const selectAllTable = (schema, table) => JSON.stringify({ operation: 'sql', sql: `select * from ${schema}.${table}` });
 
 
 module.exports = {
@@ -18,4 +20,5 @@ module.exports = {
   insert,
   describeSchema,
   describeTable,
+  selectAllTable
 };

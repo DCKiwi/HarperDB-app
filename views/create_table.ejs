@@ -15,7 +15,7 @@
       <!-- check to see if any tables exist, if so render list -->
       <% if(tables.length !== 0) { %>
         <div class="tables-select">
-          <form method="post" action="/create_table">
+          <form method="post" action="/display_insert">
             <label>Tables</label><br>
             <select name="tables" size="5">
                 <% for (var i=0; i < tables.length; i++) { %>
@@ -23,6 +23,8 @@
                 <%}%>
             </select>
             <br>
+            <!-- pass current schema to next page, needed for query -->
+            <input type="hidden" name="currentSchema" value=<%= schema %> >
             <input type="submit">
           </form>
         </div>
@@ -30,11 +32,14 @@
         <h3>No tables exist please create one</h3>
       <%}%>
 
-    <form class="create-tables" method="post" action="/create_table">
+    <form class="create-tables" method="post" action="/display_insert">
       <label>Create Table</label><br>
       <input type="text" name="tablesName" placeholder="Table name"><br>
+      <!-- pass current schema to next page, needed for query -->
+      <input type="hidden" name="currentSchema" value=<%= schema %> >
       <input type="submit">
     </form>
-
+    <script>
+    </script>
     </body>
   </html>
