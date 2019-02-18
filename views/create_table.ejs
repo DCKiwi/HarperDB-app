@@ -17,7 +17,7 @@
         <div class="tables-select">
           <form method="post" action="/display_insert">
             <label>Tables</label><br>
-            <select name="tables" size="5">
+            <select name="existingTableName" size="5">
                 <% for (var i=0; i < tables.length; i++) { %>
                   <option value=<%= tables[i] %>  ><%= tables[i] %></option>
                 <%}%>
@@ -34,7 +34,7 @@
 
     <form class="create-tables" method="post" action="/display_insert">
       <label>Create Table</label><br>
-      <input type="text" name="tablesName" placeholder="Table name"><br>
+      <input type="text" name="createTableName" placeholder="Table name"><br>
       <!-- pass current schema to next page, needed for query -->
       <input type="hidden" name="currentSchema" value=<%= schema %> >
       <input type="submit">

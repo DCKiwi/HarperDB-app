@@ -12,7 +12,6 @@ const {
   selectAllTable
 } = require('./db/query');
 
-
 // Init app
 const app = express();
 
@@ -25,15 +24,16 @@ app.set('view engine', 'ejs');
 
 // Landing page, create or select schema
 app.get('/', (req, res) => {
-  httpRequest(describeAll()).then(data => {
+  httpRequest(describeAll())
+    .then(data => {
 
-    // Array of keys from describe all object
-    const schemas = Object.keys(data.data);
+      // Array of keys from describe all object
+      const schemas = Object.keys(data.data);
 
-    res.render('index', { data, schemas });
-  }).catch(error => {
-    console.log(error);
-  });
+      res.render('index', { data, schemas });
+    }).catch(error => {
+      console.log(error);
+    });
 });
 
 // Takes request from previous page then create or select table.
@@ -43,57 +43,63 @@ app.post('/create_table', (req, res) => {
 
   // If schema exists describe it
   if (req.body.schemas) {
-    httpRequest(describeSchema(req.body.schemas)).then(queryData => {
+    httpRequest(describeSchema(req.body.schemas))
+      .then(queryData => {
 
-      // Test if query object is empty, if not extract table name key values from object array
-      if (Object.entries(queryData.data).length !== 0 && queryData.data.constructor !== Object) {
-        tables = queryData.data.map(value => value.name);
-      }
+        // Test if query object is empty, if not extract table name key values from object array
+        if (Object.entries(queryData.data).length !== 0 && queryData.data.constructor !== Object) {
+          tables = queryData.data.map(value => value.name);
+        }
 
-      message = `Current schema: ${req.body.schemas}`;
+        message = `Current schema: ${req.body.schemas}`;
 
-      res.render('create_table', { message, tables, data: req.body, schema: req.body.schemas });
-    }).catch(error => {
-      console.log(error);
-      res.redirect('index', { error });
-    });
+        res.render('create_table', { message, tables, data: req.body, schema: req.body.schemas });
+      }).catch(error => {
+        console.log(error);
+        res.redirect('index', { error });
+      });
 
     // Create schema from user input, schema will have no description
   } else {
-    httpRequest(createSchema(req.body.schemaName)).then(queryData => {
+    httpRequest(createSchema(req.body.schemaName))
+      .then(queryData => {
+        // Extract response msg and capitalize first word.
+        message = queryData.data.message;
+        message = message.charAt(0).toUpperCase() + message.slice(1);
 
-      // Extract response msg and capitalize first word.
-      message = queryData.data.message;
-      message = message.charAt(0).toUpperCase() + message.slice(1);
-
-      res.render('create_table', { message, tables, data: req.body, schema: req.body.schemaName });
-    }).catch(error => {
-      console.log(error);
-    });
+        res.render('create_table', { message, tables, data: req.body, schema: req.body.schemaName });
+      }).catch(error => {
+        console.log(error);
+      });
   }
 });
 
 // Display selected or created table
 app.post('/display_insert', (req, res) => {
-  // keyValuse = [{ id: 25, breed: "hound", name: "pussycat", age: 11 }]
-  // httpRequest(insert("cats", "breeds", keyValuse))
-  //   .then(queryData => { console.log(queryData) });
-  // console.log(req.body);
+  const schema = req.body.currentSchema;
 
-  httpRequest(selectAllTable("cats", "breeds")).then(data => {
-    console.log(data)
-  }).catch(error => {
-    console.log(error);
-  });
+  // If the user selected an existing table  
+  if (req.body.existingTableName) {
+    const table = req.body.existingTableName;
 
-  if (req.body.tables) {
-    httpRequest(describeTable(req.body.tables, req.body.currentSchema))
+    // select all values in table using a SQL query 
+    httpRequest(selectAllTable(schema, table))
       .then(queryData => {
 
-        message = `Current table: ${req.body.tables}`;
-        console.log(queryData.data.attributes)
+        message = `Current table: ${table}`;
 
-        res.render('display_insert', { data: req.body, message });
+        //extract table object keys
+        const attributes = Object.keys(queryData.data[0]);
+
+        let tableData = [];
+
+        queryData.data.forEach(function (arrayItem) {
+          val = Object.values(arrayItem);
+          tableData.push(val);
+        });
+        console.log(tableData);
+
+        res.render('display_insert', { data: req.body, attributes, tableData, message });
       }).catch(error => {
         console.log(error);
       });
