@@ -13,7 +13,7 @@ const httpRequest = async (query) => {
   try {
     return await axios.post('http://localhost:9925', query, options)
   } catch (error) {
-    console.error(error);
+    // console.error(error);
   };
 };
 

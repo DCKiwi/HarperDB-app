@@ -32,7 +32,7 @@ app.get('/', (req, res) => {
 
       res.render('index', { data, schemas });
     }).catch(error => {
-      console.log(error);
+      console.error(error);
     });
 });
 
@@ -55,7 +55,7 @@ app.post('/create_table', (req, res) => {
 
         res.render('create_table', { message, tables, data: req.body, schema: req.body.schemas });
       }).catch(error => {
-        console.log(error);
+        console.error(error);
         res.redirect('index', { error });
       });
 
@@ -69,7 +69,8 @@ app.post('/create_table', (req, res) => {
 
         res.render('create_table', { message, tables, data: req.body, schema: req.body.schemaName });
       }).catch(error => {
-        console.log(error);
+        console.error(error);
+        res.render('error', { error });
       });
   }
 });
@@ -77,6 +78,8 @@ app.post('/create_table', (req, res) => {
 // Display selected or created table
 app.post('/display_insert', (req, res) => {
   const schema = req.body.currentSchema;
+
+  // TODO: Getting "Cannot read property '0' of undefined" on some tables where I shouldnt be, not sure why.
 
   // If the user selected an existing table  
   if (req.body.existingTableName) {
@@ -88,22 +91,46 @@ app.post('/display_insert', (req, res) => {
 
         message = `Current table: ${table}`;
 
-        //extract table object keys
-        const attributes = Object.keys(queryData.data[0]);
+        // If the table has records display them
+        if (typeof queryData !== 'undefined') {
 
-        let tableData = [];
+          //extract table object keys
+          const attributes = Object.keys(queryData.data[0]);
 
-        queryData.data.forEach(function (arrayItem) {
-          val = Object.values(arrayItem);
-          tableData.push(val);
-        });
-        console.log(tableData);
+          // create 2d array with table values
+          let tableData = [];
+          queryData.data.forEach(function (arrayItem) {
+            val = Object.values(arrayItem);
+            tableData.push(val);
+          });
 
-        res.render('display_insert', { data: req.body, attributes, tableData, message });
+          // console.table(queryData.data)
+          // console.log(attributes)
+          // console.log(tableData)
+          res.render('display_insert', { data: req.body, attributes, tableData, message });
+        } else {
+          res.render('display_insert', { data: req.body, message });
+        };
+
       }).catch(error => {
-        console.log(error);
+        res.render('error', { error });
       });
   };
+
+  // if user created table
+  if (req.body.createTableName) {
+    const table = req.body.createTableName
+
+    httpRequest(createTable(schema, table))
+      .then(queryData => {
+        message = `Current table: ${table}`;
+        res.render('display_insert', { data: req.body, message });
+      }).catch(error => {
+        res.render('error', { error });
+      });
+  }
+
+
 });
 
 const port = process.env.PORT || 5001;

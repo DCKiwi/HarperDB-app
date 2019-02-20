@@ -12,6 +12,7 @@ const insert = (schema, table, keyValue) => JSON.stringify({ operation: 'insert'
 
 const selectAllTable = (schema, table) => JSON.stringify({ operation: 'sql', sql: `select * from ${schema}.${table}` });
 
+
 module.exports = {
   createSchema,
   describeAll,

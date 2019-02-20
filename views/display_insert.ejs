@@ -9,25 +9,27 @@
     </head>
     <body>
       <h1>HarperDB</h1>
-      <h2>Select an existing table or create a new one</h2>
+      <h2>Some heading here</h2>
       <h3 class="schema-name"><%= message %></h3>
-      <table>
-        <thead>
-          <tr>
-            <% for (var i=0; i < attributes.length; i++) { %>
-            <th><%= attributes[i] %></th>
-            <%}%>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <% for ( var x=0; x < tableData.length; x++) {
-              for ( var y=0; y < tableData.length; y++) { %>
-                <td> <%= tableData[x][y] %> </td> <%
-              } %>
+      <% if(typeof attributes !== 'undefined' ) { %>
+        <table>
+          <thead>
+            <tr>
+              <% for (var i=0; i < attributes.length; i++) { %>
+              <th><%= attributes[i] %></th>
+              <%}%>
             </tr>
-            <% } %>
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            <tr>
+              <% for ( var x=0; x < attributes.length; x++) {
+                for ( var y=0; y < attributes.length; y++) { %>
+                  <td> <%= tableData[x][y] %> </td> <%
+                } %>
+              </tr>
+              <% } %>
+          </tbody>
+        </table>
+      <% } %>
     </body>
   </html>
