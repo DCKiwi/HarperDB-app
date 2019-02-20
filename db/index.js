@@ -13,6 +13,8 @@ const httpRequest = async (query) => {
   try {
     return await axios.post('http://localhost:9925', query, options)
   } catch (error) {
+
+    // TODO: This needs work needs - empty table returning error needs to be handled. 
     // console.error(error);
   };
 };

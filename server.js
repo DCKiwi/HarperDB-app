@@ -91,7 +91,7 @@ app.post('/display_insert', (req, res) => {
 
         message = `Current table: ${table}`;
 
-        // If the table has records display them
+        // If table has records display them
         if (typeof queryData !== 'undefined') {
 
           //extract table object keys
@@ -128,7 +128,9 @@ app.post('/display_insert', (req, res) => {
       }).catch(error => {
         res.render('error', { error });
       });
-  }
+  };
+
+  // Edit table
 
 
 });
